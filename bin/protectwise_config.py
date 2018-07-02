@@ -194,6 +194,7 @@ class ConfigApp(admin.MConfigHandler):
                 # Strip trailing and leading whitespace
                 self.callerArgs.data[key][0] = self.callerArgs.data[key][0].strip()
             logger.info("function=handleEdit status=complete")
+            del self.callerArgs.data["password"]
             self.writeConf('protectwise', 'config', self.callerArgs.data)
 
         except admin.HandlerSetupException, e:
