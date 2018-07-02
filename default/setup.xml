@@ -1,0 +1,17 @@
+<setup>
+  <block title="Protectwise Configuration" endpoint="admin/protectwiseconfig" entity="config">
+    <input field="email">
+      <label>Email</label>
+      <type>text</type>
+    </input>
+    <input field="password">
+      <label>Password</label>
+      <type>password</type>
+    </input>
+    <input field="api_url">
+      <label>API Url (https://api.protectwise.com/api/v1)</label>
+      <type>text</type>
+    </input>
+
+  </block>
+</setup>
