@@ -1,5 +1,5 @@
 # TA-ProtectWise-API
-Better version of the ProtectWise TA that doesn't require the bullshit protectwise-emitter daemon
+Better version of the ProtectWise TA that doesn't require the protectwise-emitter daemon
 
 This app uses Pythons requests library alongside ConfigParser to pull protectwise data from the ProtectWise Restful API,
 Thus eliminating the need to run their propretary daemon to bring data in from the Visualizer cloud.
