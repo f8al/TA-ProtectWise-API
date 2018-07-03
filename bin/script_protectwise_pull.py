@@ -1,5 +1,6 @@
 import requests
 import json
+import datetime
 import time
 import splunk.clilib.cli_common as scc
 import os
@@ -64,7 +65,6 @@ logger.info("pulled config {}".format(config))
 apiUrl = config.get('api_url', None)
 header = {'Content-Type': 'application/json'}
 payload = {"email": config.get('email', None), "password": _get_cred('protectwise', config.get('email', None))}
-logger.debug("payload {}".format(payload))
 latest = int(time.time()*1000.0)
 earliest = int(latest - 31556952000)
 eventsUrl = apiUrl + "/events?"
@@ -79,20 +79,30 @@ def genToken():
 
 
 def getEvents():
-    events = requests.get(eventsUrl, headers= aHeader, params= evtParam, stream=True)
-    print(events.url)
-    print(events.encoding)
-    for line in events.iter_lines():
-        # filter out keep-alive new lines
-        if line:
-            decoded_line = line.decode('utf-8')
-            print(json.dumps(decoded_line))
+    events = requests.get(eventsUrl, headers=aHeader, params=evtParam, stream=True)
+    logger.debug("action=print url={}".format(events.url))
+    logger.debug("action=print_event_encoding encoding=\"{}\"".format(events.encoding))
+    logger.debug("action=print_keys keys=\"{}\"".format(dir(events)))
+    json_obj = events.json()
+    logger.debug("action=printing_events len={}".format(len(json_obj['events'])))
+    for evt in json_obj["events"]:
+        try:
+            evt["timestamp"] = time.strftime("%Y-%m-%dT%T.000", time.localtime(float("{}".format(evt["observedAt"])[:10])))
+            print(json.dumps(evt))
+        except Exception as e:
+            logger.error("action=error type={} msg={}".format(type(e), e))
+    json_obj["events"] = "indexed_indivudually"
+    json_obj["api_called"] = "TRUE"
+    logger.debug("action=print_api_call")
+    print(json.dumps(json_obj))
 
-
-tr = requests.get(eventsUrl, headers= header)
+tr = requests.get(eventsUrl, headers=header)
 if tr.status_code == requests.codes.unauthorized:
+    logger.debug("reauthorization request")
     genToken()
+    logger.debug("getting events")
     getEvents()
 else:
+    logger.debug('getting events')
     getEvents()
 exit(0)
