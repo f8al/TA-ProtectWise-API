@@ -82,7 +82,6 @@ def getEvents():
     events = requests.get(eventsUrl, headers=aHeader, params=evtParam, stream=True)
     logger.debug("action=print url={}".format(events.url))
     logger.debug("action=print_event_encoding encoding=\"{}\"".format(events.encoding))
-    returned_object = ""
     logger.debug("action=print_keys keys=\"{}\"".format(dir(events)))
     json_obj = events.json()
     logger.debug("action=printing_events len={}".format(len(json_obj['events'])))
